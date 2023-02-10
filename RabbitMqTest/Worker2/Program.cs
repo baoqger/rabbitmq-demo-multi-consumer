@@ -8,7 +8,7 @@ class Worker
 {
     public static void Main()
     {
-        var factory = new ConnectionFactory() {HostName = "localhost", UserName = "user", Password = "password"};
+        var factory = new ConnectionFactory() {HostName = "localhost", DispatchConsumersAsync = true };
         using (var connection = factory.CreateConnection())
         using (var channel = connection.CreateModel())
         {
@@ -20,8 +20,8 @@ class Worker
 
             Console.WriteLine(" [*] Waiting for messages.");
 
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.Received += async (model, ea) =>
             {
                 byte[] body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);

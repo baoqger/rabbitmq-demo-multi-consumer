@@ -6,12 +6,15 @@ class NewTask
 {
     public static void Main(string[] args)
     {
-        var factory = new ConnectionFactory() { HostName = "localhost",UserName ="user", Password = "password"};
-        using(var connection = factory.CreateConnection())
-        using(var channel = connection.CreateModel())
+        var factory = new ConnectionFactory() { HostName = "localhost", DispatchConsumersAsync = true };
+        using(var connection = factory.CreateConnection()) // create connection
+        using(var channel = connection.CreateModel())      // creatae channel (AMQP Model)
         {
+            // declare exchange
             channel.ExchangeDeclare(exchange: "logs", type: ExchangeType.Fanout);
+            // declare queue: test1
             channel.QueueDeclare("test1", durable: true, autoDelete: false, exclusive: false);
+            // declare queue: test2
             channel.QueueDeclare("test2", durable: true, autoDelete: false, exclusive: false);
 
             for (int i = 0; i < 31; i++)

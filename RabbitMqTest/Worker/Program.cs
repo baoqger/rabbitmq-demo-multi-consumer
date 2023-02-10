@@ -16,8 +16,8 @@ class Worker
 
         var factory = new ConnectionFactory()
         {
-            HostName = "localhost", UserName = "user", Password = "password",
-            // DispatchConsumersAsync = true
+            HostName = "localhost", 
+            DispatchConsumersAsync = true
         };
         var connection = factory.CreateConnection();
 
@@ -39,9 +39,9 @@ class Worker
 
             Console.WriteLine($" [*] Waiting for messages in {j}");
 
-            var consumer = new EventingBasicConsumer(channel);
+            var consumer = new AsyncEventingBasicConsumer(channel);
 
-            consumer.Received += (model, ea) =>
+            consumer.Received += async (model, ea) =>
             {
                 byte[] body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
